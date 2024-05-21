@@ -17,7 +17,7 @@ def checkkey():
 
 
 def make_key():
-    publicKey, privateKey = rsa.newkeys(512)
+    publicKey, privateKey = rsa.newkeys(2048)
     with open('pub_key.key', 'wb') as f:
         f.write(publicKey.save_pkcs1())
 
