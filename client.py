@@ -81,3 +81,4 @@ def connection_finale(hote:str, port=15555):
         sock.send(encrypted_message)
 
 
+connection_finale("192.167.16.167",15555)

@@ -1,6 +1,7 @@
 import socket
 import rsa
 import threading
+import os
 
 
 def checkkey():
@@ -47,28 +48,26 @@ def receive_messages(client, private_key):
             encrypted_message = client.recv(1024)
             if encrypted_message:
                 decrypted_message = decrypt(encrypted_message, private_key)
+                if decrypted_message == "\x00":
+                    os._exit(0)
+                    break
                 print("\nReceived:", decrypted_message)
+                
+            elif decrypted_message == "":
+                pass
+
         except:
             break
-
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(('', 15555))
 sock.listen(5)
 client, address = sock.accept()
 print("{} connected".format(address))
-
 client_public_key = rsa.PublicKey.load_pkcs1(client.recv(1024))
-
 client.send(public_key.save_pkcs1())
-
 threading.Thread(target=receive_messages, args=(client, private_key), daemon=True).start()
-
 while True:
-    message = input()
+    message = input("-> ")
     encrypted_message = encrypt(message, client_public_key)
     client.send(encrypted_message)
-
-print("Close")
-client.close()
-sock.close()
