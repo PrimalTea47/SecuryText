@@ -59,6 +59,7 @@ def receive_messages(client, private_key):
         except:
             break
 
+print("The server IP adress :",socket.gethostbyname(socket.gethostname()))
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(('', 15555))
 sock.listen(5)
