@@ -59,7 +59,8 @@ def receive_messages(client, private_key):
         except:
             break
 
-print("The server IP adress :",socket.gethostbyname(socket.gethostname()))
+print("The server IP address :",socket.gethostbyname(socket.gethostname()))
+print('Send "EXIT" to end the conversation (Do not use Ctrl+C)')
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(('', 15555))
 sock.listen(5)
@@ -69,6 +70,13 @@ client_public_key = rsa.PublicKey.load_pkcs1(client.recv(1024))
 client.send(public_key.save_pkcs1())
 threading.Thread(target=receive_messages, args=(client, private_key), daemon=True).start()
 while True:
-    message = input("-> ")
-    encrypted_message = encrypt(message, client_public_key)
-    client.send(encrypted_message)
+    message = input()
+    if message == "EXIT":
+        encrypted_message = encrypt("\x00", client_public_key)
+        client.send(encrypted_message)
+        sock.close()
+        exit()
+    
+    else:
+        encrypted_message = encrypt(message, client_public_key)
+        client.send(encrypted_message)

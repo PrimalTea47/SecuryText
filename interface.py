@@ -47,7 +47,12 @@ class SecureChatClient:
                 encrypted_message = self.sock.recv(1024)
                 if encrypted_message:
                     decrypted_message = self.decrypt(encrypted_message)
-                    self.display_message(f"Reçu: {decrypted_message}")
+                    if decrypted_message == "\x00":
+                        root.destroy()
+                    elif decrypted_message == "":
+                        pass
+                    else:
+                        self.display_message(f"Reçu: {decrypted_message}")
             except Exception as e:
                 self.display_message(f"Erreur : {str(e)}")
                 break
